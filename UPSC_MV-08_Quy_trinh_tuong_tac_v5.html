@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UPSC — Quy trình MV-08 · Phê duyệt danh mục chứng khoán ký quỹ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1E3A5F; --blue:#2E75B6; --teal:#1A7B8A; --green:#1F7A4D; --orange:#C55A11;
+  --red:#B22222; --purple:#5B2D8E; --indigo:#3730A3; --gray:#6B7280;
+  --lblue:#D6E4F0; --lgreen:#D9EAD3; --lorange:#FCE4D6; --lred:#FDECEA;
+  --lpurple:#EDE7F6; --lindigo:#E0E7FF; --bg:#EEEDF7; --card:#F0F0F8; --border:#CBD5E1;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Be Vietnam Pro','Segoe UI',sans-serif;background:var(--bg);min-height:100vh;color:#1a1a1a;font-size:14px}
+.header{background:linear-gradient(120deg,#10204a 0%,#1E3A5F 55%,#2E75B6 100%);padding:22px 32px 18px;color:#fff}
+.header-eyebrow{font-size:10px;opacity:.75;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;font-weight:700}
+.header-title{font-size:23px;font-weight:900;letter-spacing:-.5px}
+.header-sub{font-size:13px;opacity:.85;margin-top:5px}
+.tabs{margin-top:15px;display:flex;gap:8px;flex-wrap:wrap}
+.tab-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:.15s;font-family:inherit}
+.tab-btn:hover{background:rgba(255,255,255,.15)}
+.tab-btn.active{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.6);font-weight:800}
+.body-wrap{padding:24px 28px}
+.tab-panel{display:none}
+.tab-panel.active{display:flex;gap:20px;width:100%;align-items:flex-start}
+#panel-phases.active,#panel-approval.active,#panel-handover.active{flex-direction:column}
+.card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 16px rgba(0,0,0,.08)}
+.hint-badge{background:var(--lindigo);border-radius:6px;padding:3px 10px;font-size:11px;color:var(--indigo);font-weight:700;display:inline-block;margin-bottom:18px;border:1px solid #c7d2fe}
+.sec-title{font-size:17px;font-weight:900;color:var(--navy);margin-bottom:4px}
+.sec-sub{font-size:13px;color:var(--gray);margin-bottom:18px}
+.flow-card{flex:0 0 600px;width:600px}
+.detail-card{flex:1;min-width:0;overflow:hidden;position:sticky;top:14px}
+.swimlane-wrap{display:flex;gap:0}
+.role-col{width:96px;flex-shrink:0;display:flex;flex-direction:column}
+.role-cell{display:flex;align-items:center;justify-content:flex-end;padding-right:10px;border-right:3px solid;font-size:10px;font-weight:800;text-align:right;line-height:1.3}
+.flow-col{flex:1;display:flex;flex-direction:column;align-items:center;padding-left:16px}
+.lane-marker{width:0;height:0}
+.node-start{background:linear-gradient(135deg,#1E3A5F,#2E75B6);border-radius:30px;padding:9px 22px;color:#fff;font-weight:900;font-size:12.5px;box-shadow:0 3px 14px rgba(46,117,182,.4);text-align:center;max-width:300px}
+.node-end{background:linear-gradient(135deg,#1F7A4D,#1A7B8A);border-radius:30px;padding:9px 22px;color:#fff;font-weight:900;font-size:12.5px;box-shadow:0 3px 14px rgba(31,122,77,.35);text-align:center}
+.node{border-radius:10px;padding:10px 14px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.12);transition:transform .18s,box-shadow .18s;user-select:none;text-align:center;width:248px}
+.node:hover{transform:scale(1.03);box-shadow:0 4px 14px rgba(0,0,0,.18)}
+.node .nlabel{color:#fff;font-weight:700;font-size:12.5px;line-height:1.3}
+.node .nsub{color:#fff;opacity:.85;font-size:10.5px;margin-top:2px}
+.phase-label{display:flex;align-items:center;gap:8px;background:linear-gradient(90deg,var(--navy),var(--blue));color:#fff;border-radius:8px;padding:6px 14px;font-size:11px;font-weight:800;margin:10px 0;box-shadow:0 2px 8px rgba(30,58,95,.25)}
+.phase-num{background:rgba(255,255,255,.25);border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900}
+.gate-badge{display:inline-flex;align-items:center;gap:6px;border-radius:20px;padding:5px 12px;box-shadow:0 2px 6px rgba(0,0,0,.13);margin-bottom:6px}
+.gate-num{background:rgba(255,255,255,.22);border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:11px;color:#fff}
+.gate-label{color:#fff;font-weight:700;font-size:11px}
+.diamond-wrap{display:flex;flex-direction:column;align-items:center;position:relative}
+.diamond-outer{transform:rotate(45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.10)}
+.diamond-inner{transform:rotate(-45deg);text-align:center;padding:6px}
+.diamond-inner .dlabel{color:#fff;font-weight:700;font-size:11px;line-height:1.3}
+.arrow-down{display:flex;flex-direction:column;align-items:center}
+.arrow-label{font-size:10px;font-weight:700;margin-top:2px}
+.back-box{background:var(--lorange);border:1px solid rgba(197,90,17,.35);border-radius:8px;padding:6px 10px;font-size:10px;color:var(--orange);font-weight:700;text-align:center;width:120px}
+.back-box span{font-weight:400;display:block}
+.detail-empty{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:10px 8px}
+.de-icon{font-size:40px}.de-title{font-weight:800;color:var(--navy);font-size:16px}.de-sub{color:var(--gray);font-size:13px;line-height:1.6}
+.step-list{width:100%;margin-top:8px;display:flex;flex-direction:column;gap:6px}
+.step-list-item{background:var(--card);border-left:4px solid;border-radius:8px;padding:8px 14px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background .15s;text-align:left}
+.step-list-item:hover{background:#e2e8f0}
+.sli-title{font-weight:700;font-size:12.5px;color:var(--navy)}.sli-role{font-size:11px;color:var(--gray);margin-top:1px}
+.detail-content{display:none}.detail-content.active{display:block}
+.detail-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+.detail-title{font-size:18px;font-weight:900;margin-bottom:6px}
+.close-btn{background:var(--card);border:none;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:18px;color:var(--gray);font-family:inherit;line-height:1;flex-shrink:0}
+.role-tag{display:inline-block;border-radius:4px;padding:2px 7px;font-size:10px;font-weight:800}
+.sla-tag{display:inline-block;border-radius:4px;padding:2px 8px;font-size:10.5px;font-weight:800;background:var(--lorange);color:var(--orange);margin-left:6px}
+.section-label{font-size:11px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;margin-top:18px}
+.activity-list{display:flex;flex-direction:column;gap:6px}
+.activity-item{display:flex;gap:10px;align-items:flex-start}
+.act-num{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#fff;flex-shrink:0;margin-top:1px}
+.act-text{font-size:13px;color:#374151;line-height:1.5}
+.doc-list{display:flex;flex-wrap:wrap;gap:6px}
+.doc-tag{border-radius:6px;padding:4px 10px;font-size:12px;font-weight:700}
+.info-box{border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:12px;line-height:1.5;border:1.5px solid}
+.gate-note{font-size:11px;color:var(--gray);margin-top:6px}
+.phases-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.phase-card{border-radius:12px;border:2px solid;padding:20px}
+.pc-badge{display:inline-flex;align-items:center;gap:6px;border-radius:20px;padding:4px 12px;margin-bottom:12px;font-size:11px;font-weight:800;color:#fff}
+.pc-title{font-size:15px;font-weight:800;color:var(--navy);margin-bottom:8px}
+.pc-duration{font-size:11px;font-weight:700;margin-bottom:12px}
+.pc-items{display:flex;flex-direction:column;gap:5px}
+.pc-item{display:flex;gap:8px;font-size:12px;color:#374151}
+.pc-dot{flex-shrink:0;margin-top:3px;width:7px;height:7px;border-radius:50%}
+.pc-docs{margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}
+.pc-docs-title{font-size:10px;font-weight:800;color:var(--gray);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
+.pc-doc-tag{display:inline-block;border-radius:4px;padding:2px 8px;font-size:10.5px;font-weight:700;margin:2px 2px 0 0}
+.appr-flow{display:flex;flex-direction:column}
+.appr-step{display:flex;gap:0}
+.appr-left{width:52px;display:flex;flex-direction:column;align-items:center}
+.appr-circle{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:13px;flex-shrink:0}
+.appr-line{width:2px;flex:1;min-height:14px;opacity:.3}
+.appr-body{flex:1;padding-bottom:20px;padding-left:12px}
+.appr-step-title{font-weight:800;font-size:14px;color:var(--navy);margin-bottom:3px}
+.appr-what{font-size:12px;color:var(--gray);margin-bottom:6px}
+.appr-body ul{margin:4px 0 0 0;padding-left:18px;font-size:12.5px;color:#374151}
+.appr-body li{margin-bottom:3px}
+.appr-confirm{display:inline-flex;align-items:center;gap:5px;border-radius:6px;padding:3px 10px;font-size:11px;font-weight:700;margin-top:8px}
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{background:var(--navy);color:#fff;font-size:12px;font-weight:700;padding:8px 12px;text-align:left}
+.tbl td{padding:8px 12px;font-size:12px;border-bottom:1px solid var(--border)}
+.tbl tr:nth-child(even) td{background:var(--card)}
+.check-list{display:flex;flex-direction:column;gap:8px}
+.gate-pill{display:inline-flex;align-items:center;gap:6px;background:var(--lindigo);border:1px solid #c7d2fe;border-radius:20px;padding:5px 12px;font-size:11.5px;font-weight:700;color:var(--indigo);margin:0 8px 8px 0}
+.imgwrap{overflow-x:auto;border:1px solid var(--border);border-radius:10px;background:#fff;padding:10px}
+.imgwrap img{display:block;min-width:880px;width:100%}
+details{background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-top:12px}
+summary{cursor:pointer;font-weight:700;color:var(--blue)}
+.legend{padding:12px 28px 24px;display:flex;gap:16px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--gray)}
+.leg-dot{width:13px;height:13px;border-radius:3px}
+.leg-diamond{width:13px;height:13px;transform:rotate(45deg)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.fcard{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;border-top:4px solid var(--teal)}
+.fcard h4{font-size:14px;color:var(--navy);margin-bottom:4px}
+.fcard .fc-name{font-size:12px;color:var(--teal);font-weight:700;margin-bottom:8px}
+.fcard p{font-size:12.5px;color:var(--gray)}
+.form-a{text-decoration:none;display:block;color:inherit}.fcard-link{transition:transform .15s,box-shadow .15s}.fcard-link:hover{box-shadow:0 4px 16px rgba(0,0,0,.14);border-top-color:var(--blue);transform:translateY(-2px)}
+@media(max-width:900px){#panel-flow{flex-direction:column}.flow-card{flex:1 1 auto;width:100%}.phases-grid,.grid3,.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-eyebrow">UPSC · Hệ thống quy trình</div>
+  <div class="header-title">🏗️ Quy trình MV-08 — Phê duyệt danh mục chứng khoán ký quỹ</div>
+  <div class="header-sub">Nhóm 3 · Margin &amp; nguồn vốn — Tự động hóa BPM · quy trình · biểu mẫu · phê duyệt · SLA</div>
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="flow">🔄 Luồng xử lý</button>
+    <button class="tab-btn" data-tab="phases">📐 5 Giai đoạn</button>
+    <button class="tab-btn" data-tab="approval">✅ Phê duyệt &amp; Checklist</button>
+    <button class="tab-btn" data-tab="handover">📦 Biểu mẫu · SLA · BPMN</button>
+  </div>
+</div>
+<div class="body-wrap">
+  <div class="tab-panel active" id="panel-flow">
+    <div class="card flow-card">
+      <div class="hint-badge">🏗️ Nhấn vào từng bước để xem chi tiết trách nhiệm, SLA, biểu mẫu</div>
+      <div class="swimlane-wrap">
+        <div class="role-col" id="roleCol"></div>
+        <div class="flow-col" id="flowCol"></div>
+      </div>
+    </div>
+    <div class="card detail-card">
+      <div class="detail-empty" id="detailEmpty">
+        <div class="de-icon">🏗️</div>
+        <div class="de-title">Nhấn vào một bước trên lưu đồ</div>
+        <div class="de-sub">để xem trách nhiệm, SLA, đầu vào/ra và biểu mẫu bắt buộc</div>
+        <div class="step-list" id="stepList"></div>
+      </div>
+      <div class="detail-content" id="detailContent"></div>
+    </div>
+  </div>
+  <div class="tab-panel" id="panel-phases">
+    <div class="card" style="width:100%">
+      <div class="sec-title">📐 5 Giai đoạn của quy trình</div>
+      <div class="sec-sub">Mỗi giai đoạn có thời lượng tham chiếu, công việc chính và tài liệu/biểu mẫu bắt buộc.</div>
+      <div class="phases-grid" id="phasesGrid"></div>
+    </div>
+  </div>
+  <div class="tab-panel" id="panel-approval">
+    <div class="card" style="width:100%">
+      <div class="sec-title">✅ Các cấp &amp; nội dung phê duyệt</div>
+      <div class="sec-sub">Nguyên tắc: đề xuất (NCPT) → rà soát độc lập (QTRR) → phê duyệt (TGĐ); điều chỉnh đột xuất siết/nới đều trình phê duyệt.</div>
+      <div class="appr-flow" id="apprFlow"></div>
+    </div>
+    <div class="card" style="width:100%;margin-top:18px">
+      <div class="sec-title">🚦 Các Gate (điểm kiểm soát)</div>
+      <div class="sec-sub">Phải đạt trước khi chuyển bước tiếp theo.</div>
+      <div id="gateList"></div>
+    </div>
+    <div class="card" style="width:100%;margin-top:18px">
+      <div class="sec-title">📋 Checklist ban hành danh mục</div>
+      <div class="sec-sub">Điều kiện bắt buộc trước khi danh mục có hiệu lực.</div>
+      <div class="check-list" id="checkList"></div>
+    </div>
+  </div>
+  <div class="tab-panel" id="panel-handover">
+    <div class="card" style="width:100%">
+      <div class="sec-title">📦 Biểu mẫu &amp; hồ sơ bắt buộc</div>
+      <div class="sec-sub">Nhấn vào từng thẻ để mở file biểu mẫu tương ứng.</div>
+      <div class="grid3" id="formsGrid"></div>
+    </div>
+    <div class="card" style="width:100%;margin-top:18px">
+      <div class="sec-title">⏱ SLA theo bước</div>
+      <div class="sec-sub">Thời hạn xử lý cam kết và hành động escalation khi quá hạn.</div>
+      <table class="tbl" id="slaTable"><thead><tr><th>Mã</th><th>Bước</th><th>Đơn vị</th><th>SLA</th><th>Escalation</th></tr></thead><tbody></tbody></table>
+    </div>
+    <div class="card" style="width:100%;margin-top:18px">
+      <div class="sec-title">⚡ Sự kiện kích hoạt đánh giá đột xuất</div>
+      <div class="sec-sub">Ngưỡng số là đề xuất, cần UPSC chốt.</div>
+      <table class="tbl" id="eventsTable"><thead><tr><th>Nhóm sự kiện</th><th>Ví dụ / ngưỡng đề xuất</th><th>Hành động</th></tr></thead><tbody></tbody></table>
+    </div>
+    <div class="card" style="width:100%;margin-top:18px">
+      <div class="sec-title">🗺️ Sơ đồ BPMN (cấu hình lên engine)</div>
+      <div class="sec-sub">File .bpmn 2.0 kèm theo trong thư mục dự án.</div>
+      <div class="imgwrap"><img src="MV08_BPMN_LuongChinh.png" alt="BPMN luồng chính"></div>
+      <details><summary>Xem luồng giám sát &amp; điều chỉnh đột xuất</summary>
+        <div class="imgwrap" style="margin-top:10px"><img src="MV08_BPMN_GiamSat_DotXuat.png" alt="BPMN giám sát"></div>
+      </details>
+    </div>
+  </div>
+</div>
+<div class="legend" id="legend">
+  <div class="legend-item"><span class="leg-dot" style="background:#2E75B6"></span>P.NCPT</div>
+  <div class="legend-item"><span class="leg-dot" style="background:#1A7B8A"></span>P.QTRR</div>
+  <div class="legend-item"><span class="leg-dot" style="background:#5B2D8E"></span>TGĐ / BĐH</div>
+  <div class="legend-item"><span class="leg-dot" style="background:#C55A11"></span>B.DVCK / P.DVTC</div>
+  <div class="legend-item"><span class="leg-dot" style="background:#B22222"></span>K.MG (Môi giới)</div>
+  <div class="legend-item"><span class="leg-diamond" style="background:#C55A11"></span>Gate / điểm quyết định</div>
+  <div class="legend-item">👆 Nhấn node để xem chi tiết</div>
+</div>
+<script>
+const C={NCPT:'#2E75B6',QTRR:'#1A7B8A',TGD:'#5B2D8E',DVTC:'#C55A11',MG:'#B22222',SYS:'#3730A3'};
+const LANE={NCPT:'P.NCPT',QTRR:'P.QTRR',TGD:'TGĐ / BĐH',DVTC:'B.DVCK / P.DVTC',MG:'K.MG (Môi giới)',SYS:'Hệ thống'};
+const STEPS={
+ a1:{title:'Lấy & cập nhật dữ liệu',role:'P.NCPT',roleK:'NCPT',sla:'1 ngày',
+     items:['Lấy dữ liệu từ FiinproX/Bloomberg và nguồn CBTT','Chuẩn hóa & kiểm tra chất lượng dữ liệu đầu vào'],
+     docs:['Bộ dữ liệu chuẩn hóa']},
+ a2:{title:'Chạy Model, lập danh mục dự thảo',role:'P.NCPT',roleK:'NCPT',sla:'1 ngày',
+     info:'Áp dụng Mô hình Margin Score (Phụ lục 01) để chấm điểm và phân loại.',
+     items:['Chấm điểm Margin Score, phân loại Tiêu chuẩn / Cần theo dõi / Không cho vay','Loại trừ Black-list & CK không đủ điều kiện GDKQ','Đề xuất LTV, giá chặn, room cho từng mã'],
+     docs:['BM-02 Tờ trình danh mục','Danh mục dự thảo']},
+ a2b:{title:'Đánh giá tác động khách hàng & đối chiếu thị trường',role:'P.NCPT / K.MG / P.QTRR',roleK:'NCPT',sla:'4 giờ',
+     info:'Thay đổi LTV/giá chặn/room có thể khiến khách hàng bị call margin / force sell — cần đánh giá ảnh hưởng và so sánh mặt bằng thị trường trước khi chốt danh mục.',
+     items:['Ước tính số khách hàng / dư nợ có nguy cơ call margin do điều chỉnh','So sánh LTV & điều kiện với mặt bằng thị trường / đối thủ','Đề xuất điều chỉnh danh mục cân bằng rủi ro và ảnh hưởng khách hàng'],
+     docs:['Báo cáo đánh giá tác động KH','BM-02 (bản điều chỉnh)']},
+ a3:{title:'Rà soát độc lập',role:'P.QTRR',roleK:'QTRR',sla:'4 giờ',
+     items:['Kiểm tra ngưỡng tập trung theo mã/nhóm/ngành','Đối chiếu chỉ tiêu an toàn tài chính (ATTC)','Đối chiếu giới hạn pháp luật'],
+     docs:['Ý kiến rà soát QTRR']},
+ a4:{title:'Phê duyệt danh mục & tỷ lệ',role:'Tổng Giám đốc',roleK:'TGD',sla:'4 giờ',
+     info:'Đầu mối trình: P.QTRR. Nội dung phê duyệt: danh sách mã, LTV, giá chặn, room/hạn mức.',
+     items:['Xem xét tờ trình & ý kiến QTRR','Phê duyệt hoặc yêu cầu chỉnh sửa'],
+     docs:['BM-03 Quyết định danh mục'],gate:{num:1,label:'Phê duyệt danh mục'}},
+ a5:{title:'Ban hành & lưu trữ',role:'P.QTRR',roleK:'QTRR',sla:'linh hoạt',
+     items:['Gửi danh mục cho các phòng liên quan','Lưu trữ hồ sơ & quyết định'],
+     docs:['Danh mục ban hành']},
+ a5b:{title:'Thông báo khách hàng trước khi áp dụng',role:'K.MG / P.DVTC',roleK:'MG',sla:'≥ 3 ngày',
+     info:'Thay đổi định kỳ: thông báo trước tối thiểu 3 ngày làm việc để khách hàng chủ động xử lý tài khoản (bổ sung ký quỹ, giảm dư nợ). Siết khẩn: tối thiểu 1 ngày.',
+     items:['Gửi thông báo thay đổi LTV / giá chặn / room tới KH bị ảnh hưởng','Nêu rõ ngày hiệu lực & khuyến nghị xử lý tài khoản','Môi giới chủ động liên hệ KH có nguy cơ call margin'],
+     docs:['BM-07 Thông báo thay đổi danh mục']},
+ a6:{title:'Cài đặt lên hệ thống',role:'B.DVCK / P.DVTC',roleK:'DVTC',sla:'1 ngày',
+     items:['Cài đặt mã, LTV, giá chặn, room theo quyết định','Tách bạch quyền cài đặt'],
+     docs:['Cấu hình hệ thống']},
+ a7:{title:'Đối chiếu cài đặt (Maker–Checker)',role:'P.DVTC / KSRR',roleK:'DVTC',sla:'trong ngày',
+     info:'Maker (P.DVTC) – Checker (KSRR): đối chiếu thông số cài đặt so với quyết định phê duyệt.',
+     items:['So khớp LTV/room/giá chặn cài đặt vs quyết định','Xử lý & ghi nhận sai lệch (nếu có)'],
+     docs:['BM-04 Biên bản đối chiếu'],gate:{num:2,label:'Đối chiếu khớp'}},
+ a8:{title:'CBTT & thông báo KH + môi giới (CSKH)',role:'P.DVTC / K.MG',roleK:'MG',sla:'trong ngày',
+     info:'Sau cài đặt: công bố thông tin theo quy định và thông báo khách hàng & môi giới để tư vấn, chăm sóc khách hàng.',
+     items:['CBTT danh mục ký quỹ theo quy định','Thông báo áp dụng tới khách hàng & môi giới','Môi giới tư vấn / chăm sóc khách hàng bị ảnh hưởng'],
+     docs:['BM-07']},
+ m1:{title:'Giám sát dư nợ vs room',role:'P.NCPT / P.DVTC',roleK:'NCPT',sla:'hằng ngày',
+     items:['Theo dõi % sử dụng theo mã/nhóm/tổng','Cảnh báo khi chạm ngưỡng (đề xuất 80/90/100% room)'],
+     docs:['BM-05 Báo cáo giám sát ngày']},
+ m2:{title:'Đánh giá & đề xuất điều chỉnh danh mục (siết/nới)',role:'P.NCPT',roleK:'NCPT',sla:'≤ 4 giờ',
+     info:'Gộp chung một bước cho cả hướng siết và nới; đánh giá tác động & so sánh thị trường trước khi đề xuất.',
+     items:['Đánh giá tác động khách hàng & so sánh thị trường','Đề xuất điều chỉnh danh mục (siết hoặc nới): LTV / room / giá chặn / mã'],
+     docs:['BM-06 Phiếu điều chỉnh']},
+ m4:{title:'Phê duyệt điều chỉnh (siết/nới)',role:'Tổng Giám đốc',roleK:'TGD',sla:'4 giờ',
+     info:'Cả điều chỉnh siết và nới đều phải được TGĐ phê duyệt trước khi áp dụng.',
+     items:['Xem xét đề xuất & ý kiến QTRR','Phê duyệt điều chỉnh danh mục'],
+     docs:['BM-06']},
+ m4b:{title:'Thông báo khách hàng trước ≥ 1 ngày',role:'K.MG / P.DVTC',roleK:'MG',sla:'≥ 1 ngày',
+     info:'Mọi điều chỉnh đột xuất đều thông báo khách hàng trước tối thiểu 1 ngày để khách hàng chủ động xử lý tài khoản.',
+     items:['Gửi thông báo điều chỉnh tới KH bị ảnh hưởng','Nêu ngày hiệu lực & khuyến nghị xử lý tài khoản'],
+     docs:['BM-07']},
+ m5:{title:'Cài đặt lại trên hệ thống',role:'B.DVCK / P.DVTC',roleK:'DVTC',sla:'trong ngày',
+     items:['Cập nhật thông số theo điều chỉnh','Đối chiếu maker–checker'],
+     docs:['BM-04']},
+ m5b:{title:'Thông báo KH & môi giới (CSKH)',role:'K.MG',roleK:'MG',sla:'trong ngày',
+     items:['Thông báo khách hàng & môi giới về điều chỉnh','Tư vấn xử lý tài khoản'],
+     docs:['BM-07']},
+};
+const FLOW=[
+ {t:'start',role:'NCPT',label:'Đến kỳ rà soát hằng tháng / Yêu cầu BĐH'},
+ {t:'phase',num:'1',label:'GIAI ĐOẠN 1 · Lập & phê duyệt danh mục'},
+ {t:'arrow'},
+ {t:'node',id:'a1',role:'NCPT'},
+ {t:'arrow'},
+ {t:'node',id:'a2',role:'NCPT'},
+ {t:'arrow'},
+ {t:'node',id:'a2b',role:'NCPT'},
+ {t:'arrow'},
+ {t:'node',id:'a3',role:'QTRR'},
+ {t:'arrow'},
+ {t:'diamond',role:'QTRR',label:'Đạt?',color:C.QTRR,back:'Chưa đạt',backsub:'chỉnh lại danh mục (A2)',pass:'✓ Đạt'},
+ {t:'node',id:'a4',role:'TGD'},
+ {t:'arrow'},
+ {t:'diamond',role:'TGD',label:'Phê duyệt?',color:C.TGD,back:'Từ chối',backsub:'trả về A2',pass:'✓ Duyệt'},
+ {t:'phase',num:'2',label:'GIAI ĐOẠN 2 · Ban hành, thông báo & cài đặt'},
+ {t:'arrow'},
+ {t:'node',id:'a5',role:'QTRR'},
+ {t:'arrow'},
+ {t:'node',id:'a5b',role:'MG'},
+ {t:'arrow'},
+ {t:'node',id:'a6',role:'DVTC'},
+ {t:'arrow'},
+ {t:'node',id:'a7',role:'DVTC'},
+ {t:'arrow'},
+ {t:'diamond',role:'DVTC',label:'Khớp?',color:C.QTRR,back:'Lệch',backsub:'cài đặt lại (A6)',pass:'✓ Khớp'},
+ {t:'node',id:'a8',role:'MG'},
+ {t:'arrow'},
+ {t:'end',role:'DVTC',label:'Danh mục có hiệu lực'},
+ {t:'phase',num:'3',label:'GIAI ĐOẠN 3 · Giám sát & điều chỉnh đột xuất'},
+ {t:'arrow'},
+ {t:'node',id:'m1',role:'NCPT'},
+ {t:'arrow'},
+ {t:'diamond',role:'NCPT',label:'Sự kiện / chỉ định?',color:C.DVTC,back:'Không',backsub:'tiếp tục theo dõi',pass:'✓ Có'},
+ {t:'node',id:'m2',role:'NCPT'},
+ {t:'arrow'},
+ {t:'node',id:'m4',role:'TGD'},
+ {t:'arrow'},
+ {t:'node',id:'m4b',role:'MG'},
+ {t:'arrow'},
+ {t:'node',id:'m5',role:'DVTC'},
+ {t:'arrow'},
+ {t:'node',id:'m5b',role:'MG'},
+ {t:'end',role:'DVTC',label:'Hoàn tất điều chỉnh'},
+];
+const downArrow=(label)=>`<div class="arrow-down"><svg width="20" height="${label?40:30}"><line x1="10" y1="0" x2="10" y2="${label?28:22}" stroke="#9aa3b2" stroke-width="2"/><polygon points="5,${label?28:22} 15,${label?28:22} 10,${label?36:30}" fill="#9aa3b2"/></svg>${label?`<span class="arrow-label" style="color:#6B7280">${label}</span>`:''}</div>`;
+function renderFlow(){
+ let html='',zones=[],cur=null,z=-1;
+ FLOW.forEach(r=>{
+   if(['start','node','end'].includes(r.t) && r.role!==cur){cur=r.role;z++;zones.push(cur);html+=`<div class="lane-marker" id="lm${z}"></div>`;}
+   if(r.t==='start'){html+=`<div class="node-start">🚀 ${r.label}</div>`;}
+   else if(r.t==='end'){html+=`<div class="node-end">🏁 ${r.label}</div>`;}
+   else if(r.t==='phase'){html+=`<div class="phase-label"><span class="phase-num">${r.num}</span>${r.label}</div>`;}
+   else if(r.t==='arrow'){html+=downArrow(r.label);}
+   else if(r.t==='node'){const s=STEPS[r.id];const gate=s.gate?`<div class="gate-badge" style="background:${C[r.role]};"><span class="gate-num">${s.gate.num}</span><span class="gate-label">Gate ${s.gate.num}: ${s.gate.label}</span></div>`:'';
+     html+=gate+`<div class="node" style="background:${C[r.role]}" data-step="${r.id}" onclick="toggleStep('${r.id}')"><span class="nlabel">${s.title}</span><span class="nsub">${s.role} · ⏱ ${s.sla}</span></div>`;}
+   else if(r.t==='diamond'){
+     html+=`<div class="diamond-wrap">`+
+       `<div style="position:absolute;left:-150px;top:18px;display:flex;align-items:center;gap:4px;">`+
+         `<div class="back-box">↩ ${r.back}<span>${r.backsub}</span></div>`+
+         `<svg width="40" height="16"><line x1="40" y1="8" x2="8" y2="8" stroke="${C.DVTC}" stroke-width="2" stroke-dasharray="4,2"/><polygon points="8,3 8,13 0,8" fill="${C.DVTC}"/></svg>`+
+       `</div>`+
+       `<div class="diamond-outer" style="width:92px;height:92px;background:${r.color};"><div class="diamond-inner"><div class="dlabel">${r.label}</div></div></div>`+
+       `<div class="arrow-down" style="margin-top:2px"><svg width="20" height="34"><line x1="10" y1="0" x2="10" y2="24" stroke="${C.green}" stroke-width="2"/><polygon points="5,24 15,24 10,32" fill="${C.green}"/></svg><span class="arrow-label" style="color:${C.green}">${r.pass}</span></div>`+
+     `</div>`;
+   }
+ });
+ document.getElementById('flowCol').innerHTML=html;
+ document.getElementById('roleCol').innerHTML=zones.map((r,i)=>`<div class="role-cell" id="role${i}" style="border-color:${C[r]}55;color:${C[r]}">${LANE[r]}</div>`).join('');
+ syncLanes(zones.length);
+}
+function syncLanes(n){
+ const fc=document.querySelector('.flow-col');if(!fc)return;
+ const top0=fc.getBoundingClientRect().top;
+ const tops=[];for(let i=0;i<n;i++){const el=document.getElementById('lm'+i);tops.push(el?el.getBoundingClientRect().top-top0:null);}
+ const H=fc.getBoundingClientRect().height;
+ for(let i=0;i<n;i++){const t=tops[i];const nx=(i+1<n&&tops[i+1]!=null)?tops[i+1]:H;const el=document.getElementById('role'+i);if(el&&t!=null)el.style.height=Math.max(nx-t,30)+'px';}
+}
+const stepListEl=document.getElementById('stepList');
+Object.entries(STEPS).forEach(([k,s])=>{
+ const el=document.createElement('div');el.className='step-list-item';el.style.borderLeftColor=C[s.roleK];
+ el.innerHTML=`<div><div class="sli-title">${s.title}</div><div class="sli-role">${s.role} · ⏱ ${s.sla}</div></div><span style="color:var(--gray);font-size:16px;">›</span>`;
+ el.addEventListener('click',()=>toggleStep(k));stepListEl.appendChild(el);
+});
+let activeStep=null;
+function toggleStep(k){if(activeStep===k){activeStep=null;showEmpty();unhi();}else{activeStep=k;showDetail(k);hi(k);}}
+function unhi(){document.querySelectorAll('.node[data-step]').forEach(n=>{n.style.boxShadow='0 2px 8px rgba(0,0,0,.12)';});}
+function hi(k){unhi();const el=document.querySelector(`.node[data-step="${k}"]`);if(el)el.style.boxShadow=`0 0 0 3px ${C[STEPS[k].roleK]}, 0 4px 16px rgba(0,0,0,.2)`;}
+function showEmpty(){document.getElementById('detailEmpty').style.display='';const d=document.getElementById('detailContent');d.style.display='none';d.classList.remove('active');}
+function showDetail(k){
+ const s=STEPS[k],col=C[s.roleK];
+ const info=s.info?`<div class="info-box" style="background:${col}0D;border-color:${col}44;color:${col};">💡 ${s.info}</div>`:'';
+ const gate=s.gate?`<div style="margin-bottom:14px;"><div class="gate-badge" style="background:${col};"><span class="gate-num">${s.gate.num}</span><span class="gate-label">Gate ${s.gate.num}: ${s.gate.label}</span></div><div class="gate-note">Điểm kiểm soát — phải đạt trước khi chuyển bước tiếp theo</div></div>`:'';
+ const acts=s.items.map((it,i)=>`<div class="activity-item"><span class="act-num" style="background:${col};">${i+1}</span><span class="act-text">${it}</span></div>`).join('');
+ const docs=s.docs.map(d=>`<span class="doc-tag" style="background:${col}18;border:1px solid ${col}44;color:${col};">📋 ${d}</span>`).join('');
+ const dc=document.getElementById('detailContent');
+ dc.innerHTML=`<div class="detail-header"><div><div class="detail-title" style="color:${col};">${s.title}</div>`+
+   `<span class="role-tag" style="background:${col}22;border:1px solid ${col}55;color:${col};">${s.role}</span><span class="sla-tag">⏱ SLA: ${s.sla}</span></div>`+
+   `<button class="close-btn" onclick="toggleStep('${k}')">×</button></div>`+
+   info+gate+`<div class="section-label">Hoạt động chính</div><div class="activity-list">${acts}</div>`+
+   `<div class="section-label">Biểu mẫu / tài liệu</div><div class="doc-list">${docs}</div>`;
+ document.getElementById('detailEmpty').style.display='none';dc.style.display='block';dc.classList.add('active');
+}
+document.querySelectorAll('.tab-btn').forEach(b=>{b.addEventListener('click',()=>{
+ document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
+ document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+ b.classList.add('active');document.getElementById('panel-'+b.dataset.tab).classList.add('active');
+ document.getElementById('legend').style.display=b.dataset.tab==='flow'?'':'none';
+ if(b.dataset.tab==='flow')requestAnimationFrame(()=>syncLanes(document.querySelectorAll('.role-cell').length));
+});});
+const PHASES=[
+ {n:'A',h:'Xây dựng & phê duyệt Mô hình',dur:'Khi xây mới / đổi phương pháp',c:'#1A7B8A',tint:'#f0faf9',items:['NCPT thiết kế bộ tiêu chí, trọng số, ngưỡng (PL01)','QTRR thẩm định độc lập & backtest','TGĐ phê duyệt Mô hình'],docs:['BM-01','Tài liệu Model (PL01)']},
+ {n:'B',h:'Lập & phê duyệt danh mục',dur:'Hằng tháng',c:'#2E75B6',tint:'#f1f7fc',items:['Lấy dữ liệu, chạy Model, chấm điểm','Đánh giá tác động KH & so sánh thị trường','QTRR rà soát → TGĐ phê duyệt'],docs:['BM-02','BM-03']},
+ {n:'C',h:'Ban hành, thông báo & cài đặt',dur:'Thông báo KH ≥ 3 ngày trước',c:'#C55A11',tint:'#fdf4ee',items:['Thông báo KH trước ≥ 3 ngày (định kỳ) / ≥ 1 ngày (siết)','Cài đặt & đối chiếu maker–checker','CBTT & thông báo KH + môi giới (CSKH)'],docs:['BM-04','BM-07']},
+ {n:'D',h:'Giám sát hằng ngày',dur:'Hằng ngày',c:'#1F7A4D',tint:'#f0faf4',items:['Theo dõi dư nợ vs room','Cảnh báo khi chạm ngưỡng','Báo cáo giám sát'],docs:['BM-05']},
+ {n:'E',h:'Đánh giá đột xuất & điều chỉnh',dur:'Theo sự kiện',c:'#5B2D8E',tint:'#f7f3fb',items:['Kích hoạt theo sự kiện / chỉ định BĐH','Đánh giá & đề xuất điều chỉnh (siết/nới)','Trình phê duyệt & thông báo KH ≥ 1 ngày'],docs:['BM-06','BM-07']},
+];
+document.getElementById('phasesGrid').innerHTML=PHASES.map(p=>`<div class="phase-card" style="background:linear-gradient(160deg,#fff,${p.tint});border-color:${p.c}44;">`+
+ `<div class="pc-badge" style="background:${p.c};">Giai đoạn ${p.n}</div><div class="pc-title">${p.h}</div><div class="pc-duration" style="color:${p.c};">⏱ ${p.dur}</div>`+
+ `<div class="pc-items">${p.items.map(i=>`<div class="pc-item"><span class="pc-dot" style="background:${p.c};"></span>${i}</div>`).join('')}</div>`+
+ `<div class="pc-docs"><div class="pc-docs-title">Tài liệu bắt buộc</div>${p.docs.map(d=>`<span class="pc-doc-tag" style="background:${p.c}18;color:${p.c};">📋 ${d}</span>`).join('')}</div></div>`).join('');
+const APPR=[
+ {who:'P.NCPT — Đề xuất',c:'#2E75B6',what:'Xây dựng Mô hình & danh mục',pts:['Chấm điểm theo Model (PL01)','Đề xuất mã · LTV · giá chặn · room','Loại trừ Black-list & CK không đủ ĐK'],sig:'📋 Tờ trình BM-02'},
+ {who:'P.QTRR — Rà soát độc lập',c:'#1A7B8A',what:'Tuyến phòng vệ thứ 2 · đầu mối trình TGĐ',pts:['Kiểm tra ngưỡng tập trung & ATTC','Đối chiếu giới hạn pháp luật','Đồng thuận trước khi trình'],sig:'✍️ Ý kiến QTRR trên tờ trình'},
+ {who:'Tổng Giám đốc — Phê duyệt',c:'#5B2D8E',what:'Quyết định danh mục, tỷ lệ & Mô hình',pts:['Phê duyệt Mô hình (PL01)','Phê duyệt danh mục & tỷ lệ định kỳ (BM-03)','Phê duyệt điều chỉnh đột xuất trước khi áp dụng'],sig:'🔏 Quyết định / ký BM-03'},
+ {who:'Điều chỉnh đột xuất (siết/nới)',c:'#C55A11',what:'Cả siết và nới — trình phê duyệt trước khi áp dụng',pts:['NCPT đề xuất điều chỉnh (siết/nới)','TGĐ phê duyệt trước khi áp dụng','Thông báo khách hàng trước ≥ 1 ngày'],sig:'📋 BM-06 + BM-07'},
+];
+document.getElementById('apprFlow').innerHTML=APPR.map((a,i)=>`<div class="appr-step"><div class="appr-left"><div class="appr-circle" style="background:${a.c};">${i+1}</div>${i<APPR.length-1?`<div class="appr-line" style="background:${a.c};"></div>`:''}</div>`+
+ `<div class="appr-body"><div class="appr-step-title">${a.who}</div><div class="appr-what">${a.what}</div><ul>${a.pts.map(p=>`<li>${p}</li>`).join('')}</ul>`+
+ `<div class="appr-confirm" style="background:${a.c}18;color:${a.c};">${a.sig}</div></div></div>`).join('');
+const GATES=[['1','QTRR rà soát đạt','#1A7B8A'],['—','Phê duyệt danh mục (TGĐ)','#5B2D8E'],['2','Đối chiếu cài đặt khớp (Maker–Checker)','#1A7B8A'],['—','Sự kiện kích hoạt / chỉ định BĐH','#C55A11'],['—','Phê duyệt điều chỉnh đột xuất (siết/nới)','#3730A3']];
+document.getElementById('gateList').innerHTML=GATES.map(g=>`<span class="gate-pill" style="background:${g[2]}14;border-color:${g[2]}44;color:${g[2]};"><span style="background:${g[2]};color:#fff;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;">${g[0]}</span>${g[1]}</span>`).join('');
+const CHECK=[['Dữ liệu đầu vào đã kiểm tra chất lượng & đầy đủ','P.NCPT'],['Loại trừ Black-list & CK không đủ điều kiện GDKQ','P.NCPT'],['Đã đánh giá tác động khách hàng & so sánh thị trường','P.NCPT/K.MG'],['Danh mục tuân thủ giới hạn pháp luật (5% / 10% / 200% VCSH / 3% KH; LTV ≤ 50%)','P.QTRR'],['P.QTRR rà soát độc lập & đồng thuận','P.QTRR'],['Tổng Giám đốc phê duyệt danh mục & tỷ lệ (BM-03)','TGĐ'],['Đã thông báo khách hàng trước ≥ 3 ngày (định kỳ) / ≥ 1 ngày (siết)','K.MG/P.DVTC'],['Cài đặt hệ thống khớp quyết định (BM-04, Maker–Checker)','P.DVTC/KSRR'],['CBTT & thông báo khách hàng + môi giới','B.DVCK/P.DVTC']];
+document.getElementById('checkList').innerHTML=CHECK.map((r,i)=>`<div style="display:flex;align-items:center;justify-content:space-between;background:${i%2?'#fff':'#F0F0F8'};border-radius:6px;padding:8px 12px;border:1px solid var(--border);"><div style="display:flex;align-items:center;gap:8px;flex:1;"><span style="background:#1F7A4D;color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;flex-shrink:0;">${i+1}</span><span style="font-size:12.5px;color:#374151;">${r[0]}</span></div><span style="background:#E0E7FF;color:#3730A3;border-radius:4px;padding:2px 8px;font-size:10px;font-weight:700;white-space:nowrap;margin-left:8px;">${r[1]}</span></div>`).join('');
+const FORMS=[['BM-01','Nhật ký phiên bản & kiểm định Mô hình','Theo dõi thay đổi & backtest; ký NCPT/QTRR/TGĐ','UPSC_MV-08_BM-01_Nhat_ky_kiem_dinh_Model.docx'],['BM-02','Tờ trình / Danh mục ký quỹ','Bảng danh mục: mã · LTV · giá chặn · room · hạn mức','UPSC_MV-08_BM-02_Danh_muc_ky_quy.xlsx'],['BM-03','Quyết định ban hành danh mục','Định dạng QĐ-TGĐ; danh mục & tỷ lệ chính thức','UPSC_MV-08_BM-03_Quyet_dinh_ban_hanh_danh_muc.docx'],['BM-04','Biên bản đối chiếu cài đặt','Maker–checker: cài đặt vs quyết định','UPSC_MV-08_BM-04_Bien_ban_doi_chieu_cai_dat.docx'],['BM-05','Báo cáo giám sát margin hằng ngày','Dư nợ vs room theo mã/nhóm/tổng; cảnh báo','UPSC_MV-08_BM-05_Giam_sat_margin_ngay.xlsx'],['BM-06','Phiếu đề xuất/điều chỉnh đột xuất','Sự kiện kích hoạt; siết/nới; phê duyệt','UPSC_MV-08_BM-06_Phieu_dieu_chinh_dot_xuat.docx'],['BM-07','Thông báo thay đổi danh mục ký quỹ','Gửi khách hàng & môi giới; ngày hiệu lực','UPSC_MV-08_BM-07_Thong_bao_thay_doi_danh_muc.docx'],['BM-08','Đánh giá tác động đến khách hàng','Nguy cơ call margin theo mã & theo KH; so sánh theo công ty','UPSC_MV-08_BM-08_Danh_gia_tac_dong_KH_v3.xlsx'],['PL-01','Model đánh giá ký quỹ (tham khảo)','Chấm điểm margin: nhóm tài chính & phi tài chính','UPSC_MV-08_Model_theo_PL01.xlsx']];
+document.getElementById('formsGrid').innerHTML=FORMS.map(f=>`<a class="form-a" href="${f[3]}" download target="_blank"><div class="fcard fcard-link"><h4>${f[0]} <span style="font-size:11px;color:var(--blue);font-weight:700">↗ Mở file</span></h4><div class="fc-name">${f[1]}</div><p>${f[2]}</p></div></a>`).join('');
+const SLA=[['A1','Lấy & cập nhật dữ liệu','P.NCPT','1 ngày làm việc','Nhắc NCPT; báo Trưởng phòng'],['A2','Chạy danh mục dự thảo','P.NCPT','1 ngày làm việc','Cảnh báo trễ kỳ rà soát'],['A2b','Đánh giá tác động KH & so sánh thị trường','P.NCPT/K.MG','4 giờ','Nhắc hoàn tất đánh giá'],['A3','Rà soát độc lập','P.QTRR','4 giờ','Nhắc QTRR; báo BĐH'],['A4','Phê duyệt danh mục & tỷ lệ','Tổng Giám đốc','4 giờ','Nhắc phê duyệt'],['A5b','Thông báo khách hàng trước khi áp dụng','K.MG/P.DVTC','≥ 3 ngày (định kỳ) · ≥ 1 ngày (siết)','Chưa đủ thời gian báo → hoãn hiệu lực'],['A6','Cài đặt lên hệ thống','B.DVCK/P.DVTC','1 ngày làm việc','Cảnh báo chậm hiệu lực'],['A7','Đối chiếu cài đặt (Maker–Checker)','P.DVTC/KSRR','Trong ngày','Chặn hiệu lực tới khi đối chiếu xong'],['A8','CBTT & thông báo KH + môi giới','P.DVTC/K.MG','Trong ngày','Nhắc CBTT/CSKH'],['D1','Giám sát hằng ngày','P.NCPT/P.DVTC','Hằng ngày','Cảnh báo nếu thiếu báo cáo'],['E2','Đánh giá & đề xuất điều chỉnh (siết/nới)','P.NCPT','≤ 4 giờ','Leo thang lên BĐH'],['E4','Phê duyệt điều chỉnh (siết/nới)','Tổng Giám đốc','4 giờ','Giữ trạng thái chờ duyệt'],['E4b','Thông báo KH trước khi áp dụng điều chỉnh','K.MG/P.DVTC','≥ 1 ngày','Chưa đủ thời gian báo → hoãn áp dụng']];
+document.querySelector('#slaTable tbody').innerHTML=SLA.map(r=>`<tr><td style="font-weight:700">${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td style="color:#C55A11;font-weight:700">${r[3]}</td><td>${r[4]}</td></tr>`).join('');
+const EVENTS=[['Trạng thái niêm yết','Mã vào diện cảnh báo/kiểm soát/hạn chế GD/đình chỉ/hủy niêm yết','Loại mã hoặc giảm mạnh LTV ngay'],['Biến động giá & thanh khoản','Giảm sàn ≥ 3 phiên; hoặc giảm ≥ 30% trong 5–10 phiên; KLGD giảm > 50%','Đánh giá lại LTV/room'],['Cấu trúc cổ phiếu','Tăng vốn/pha loãng lớn; free-float thay đổi mạnh','Rà soát điều kiện & room'],['Sự kiện doanh nghiệp','Lỗ/kiểm toán ngoại trừ; thay đổi lãnh đạo; M&A; vi phạm CBTT','Rà soát mã liên quan'],['Thị trường / quy định','VN-Index biến động mạnh; thay đổi quy định margin của UBCK','Rà soát toàn danh mục'],['Tập trung rủi ro','Dư nợ một mã/nhóm chạm ngưỡng cảnh báo','Điều chỉnh room'],['Chỉ định của Ban điều hành','Định hướng tăng/giảm cho vay theo khẩu vị rủi ro','Điều chỉnh theo chỉ đạo']];
+document.querySelector('#eventsTable tbody').innerHTML=EVENTS.map(r=>`<tr><td style="font-weight:600">${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
+renderFlow();
+window.addEventListener('resize',()=>syncLanes(document.querySelectorAll('.role-cell').length));
+</script>
+</body>
+</html>
