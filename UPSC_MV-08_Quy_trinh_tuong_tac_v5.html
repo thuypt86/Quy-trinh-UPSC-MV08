@@ -122,6 +122,33 @@ summary{cursor:pointer;font-weight:700;color:var(--blue)}
 .fcard p{font-size:12.5px;color:var(--gray)}
 .form-a{text-decoration:none;display:block;color:inherit}.fcard-link{transition:transform .15s,box-shadow .15s}.fcard-link:hover{box-shadow:0 4px 16px rgba(0,0,0,.14);border-top-color:var(--blue);transform:translateY(-2px)}
 @media(max-width:900px){#panel-flow{flex-direction:column}.flow-card{flex:1 1 auto;width:100%}.phases-grid,.grid3,.grid2{grid-template-columns:1fr}}
+
+.modal-ov{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:flex-start;justify-content:center;z-index:100;overflow-y:auto;padding:30px 16px}
+.modal-ov.open{display:flex}
+.modal{background:#fff;border-radius:14px;max-width:860px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.35);overflow:hidden;margin-bottom:40px}
+.modal-head{background:linear-gradient(120deg,#1E3A5F,#2E75B6);color:#fff;padding:14px 22px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:2}
+.mh-code{font-size:11px;opacity:.85;font-weight:700;letter-spacing:1px}
+.mh-title{font-size:16px;font-weight:800;margin-top:2px}
+.modal-close{background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:6px;width:30px;height:30px;font-size:20px;cursor:pointer;flex-shrink:0}
+.modal-body{padding:20px 24px}
+.fm-org{font-size:11.5px;color:var(--gray);font-weight:700;margin-bottom:6px}
+.fm-name{font-size:16px;font-weight:900;color:var(--navy)}
+.fm-sub{font-size:12px;color:var(--gray);font-style:italic;margin-bottom:6px}
+.fm-sec{font-size:11.5px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:.4px;margin:16px 0 8px}
+.fm-info{display:grid;grid-template-columns:1fr 1fr;gap:2px 22px}
+.fm-info .fi{font-size:12.5px;border-bottom:1px dashed #d9d9d9;padding:5px 0}
+.fm-info b{color:var(--navy)}
+.fm-tbl{width:100%;border-collapse:collapse;margin:2px 0 6px}
+.fm-tbl th{background:var(--lblue);color:var(--navy);font-size:10.5px;font-weight:700;padding:6px 7px;border:1px solid #cbd5e1;text-align:left}
+.fm-tbl td{padding:6px 7px;font-size:11px;border:1px solid #cbd5e1;vertical-align:top}
+.fm-box{border:1px solid #cbd5e1;border-radius:8px;height:52px;background:#fbfcfe;margin-bottom:6px}
+.fm-note{background:#f0f9ff;border-left:3px solid var(--blue);padding:8px 12px;font-size:12px;border-radius:6px;margin-bottom:6px;color:#0c4a6e}
+.fm-choice{font-size:12.5px;font-weight:600;margin:4px 0 8px;color:var(--navy)}
+.fm-sign{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+.fm-sign .fs{flex:1;min-width:120px;text-align:center;border-top:1px solid #cbd5e1;padding-top:8px}
+.fm-sign b{display:block;color:var(--navy);font-size:11.5px}
+.fm-sign span{color:var(--gray);font-style:italic;font-size:10.5px}
+.fm-dl{display:inline-block;margin-top:16px;background:var(--blue);color:#fff;padding:8px 16px;border-radius:8px;font-size:12.5px;font-weight:700;text-decoration:none}
 </style>
 </head>
 <body>
@@ -254,7 +281,7 @@ const STEPS={
      info:'Sau cài đặt: công bố thông tin theo quy định và thông báo khách hàng & môi giới để tư vấn, chăm sóc khách hàng.',
      items:['CBTT danh mục ký quỹ theo quy định','Thông báo áp dụng tới khách hàng & môi giới','Môi giới tư vấn / chăm sóc khách hàng bị ảnh hưởng'],
      docs:['BM-07']},
- m1:{title:'Giám sát dư nợ vs room',role:'P.NCPT / P.DVTC',roleK:'NCPT',sla:'hằng ngày',
+ m1:{title:'Giám sát dư nợ vs room',role:'P.QTRR / P.DVTC',roleK:'QTRR',sla:'hằng ngày',
      items:['Theo dõi % sử dụng theo mã/nhóm/tổng','Cảnh báo khi chạm ngưỡng (đề xuất 80/90/100% room)'],
      docs:['BM-05 Báo cáo giám sát ngày']},
  m2:{title:'Đánh giá & đề xuất điều chỉnh danh mục (siết/nới)',role:'P.NCPT',roleK:'NCPT',sla:'≤ 4 giờ',
@@ -308,7 +335,7 @@ const FLOW=[
  {t:'end',role:'DVTC',label:'Danh mục có hiệu lực'},
  {t:'phase',num:'3',label:'GIAI ĐOẠN 3 · Giám sát & điều chỉnh đột xuất'},
  {t:'arrow'},
- {t:'node',id:'m1',role:'NCPT'},
+ {t:'node',id:'m1',role:'QTRR'},
  {t:'arrow'},
  {t:'diamond',role:'NCPT',label:'Sự kiện / chỉ định?',color:C.DVTC,back:'Không',backsub:'tiếp tục theo dõi',pass:'✓ Có'},
  {t:'node',id:'m2',role:'NCPT'},
@@ -412,13 +439,94 @@ document.getElementById('gateList').innerHTML=GATES.map(g=>`<span class="gate-pi
 const CHECK=[['Dữ liệu đầu vào đã kiểm tra chất lượng & đầy đủ','P.NCPT'],['Loại trừ Black-list & CK không đủ điều kiện GDKQ','P.NCPT'],['Đã đánh giá tác động khách hàng & so sánh thị trường','P.NCPT/K.MG'],['Danh mục tuân thủ giới hạn pháp luật (5% / 10% / 200% VCSH / 3% KH; LTV ≤ 50%)','P.QTRR'],['P.QTRR rà soát độc lập & đồng thuận','P.QTRR'],['Tổng Giám đốc phê duyệt danh mục & tỷ lệ (BM-03)','TGĐ'],['Đã thông báo khách hàng trước ≥ 3 ngày (định kỳ) / ≥ 1 ngày (siết)','K.MG/P.DVTC'],['Cài đặt hệ thống khớp quyết định (BM-04, Maker–Checker)','P.DVTC/KSRR'],['CBTT & thông báo khách hàng + môi giới','B.DVCK/P.DVTC']];
 document.getElementById('checkList').innerHTML=CHECK.map((r,i)=>`<div style="display:flex;align-items:center;justify-content:space-between;background:${i%2?'#fff':'#F0F0F8'};border-radius:6px;padding:8px 12px;border:1px solid var(--border);"><div style="display:flex;align-items:center;gap:8px;flex:1;"><span style="background:#1F7A4D;color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;flex-shrink:0;">${i+1}</span><span style="font-size:12.5px;color:#374151;">${r[0]}</span></div><span style="background:#E0E7FF;color:#3730A3;border-radius:4px;padding:2px 8px;font-size:10px;font-weight:700;white-space:nowrap;margin-left:8px;">${r[1]}</span></div>`).join('');
 const FORMS=[['BM-01','Nhật ký phiên bản & kiểm định Mô hình','Theo dõi thay đổi & backtest; ký NCPT/QTRR/TGĐ','UPSC_MV-08_BM-01_Nhat_ky_kiem_dinh_Model.docx'],['BM-02','Tờ trình / Danh mục ký quỹ','Bảng danh mục: mã · LTV · giá chặn · room · hạn mức','UPSC_MV-08_BM-02_Danh_muc_ky_quy.xlsx'],['BM-03','Quyết định ban hành danh mục','Định dạng QĐ-TGĐ; danh mục & tỷ lệ chính thức','UPSC_MV-08_BM-03_Quyet_dinh_ban_hanh_danh_muc.docx'],['BM-04','Biên bản đối chiếu cài đặt','Maker–checker: cài đặt vs quyết định','UPSC_MV-08_BM-04_Bien_ban_doi_chieu_cai_dat.docx'],['BM-05','Báo cáo giám sát margin hằng ngày','Dư nợ vs room theo mã/nhóm/tổng; cảnh báo','UPSC_MV-08_BM-05_Giam_sat_margin_ngay.xlsx'],['BM-06','Phiếu đề xuất/điều chỉnh đột xuất','Sự kiện kích hoạt; siết/nới; phê duyệt','UPSC_MV-08_BM-06_Phieu_dieu_chinh_dot_xuat.docx'],['BM-07','Thông báo thay đổi danh mục ký quỹ','Gửi khách hàng & môi giới; ngày hiệu lực','UPSC_MV-08_BM-07_Thong_bao_thay_doi_danh_muc.docx'],['BM-08','Đánh giá tác động đến khách hàng','Nguy cơ call margin theo mã & theo KH; so sánh theo công ty','UPSC_MV-08_BM-08_Danh_gia_tac_dong_KH_v3.xlsx'],['PL-01','Model đánh giá ký quỹ (tham khảo)','Chấm điểm margin: nhóm tài chính & phi tài chính','UPSC_MV-08_Model_theo_PL01.xlsx']];
-document.getElementById('formsGrid').innerHTML=FORMS.map(f=>`<a class="form-a" href="${f[3]}" download target="_blank"><div class="fcard fcard-link"><h4>${f[0]} <span style="font-size:11px;color:var(--blue);font-weight:700">↗ Mở file</span></h4><div class="fc-name">${f[1]}</div><p>${f[2]}</p></div></a>`).join('');
-const SLA=[['A1','Lấy & cập nhật dữ liệu','P.NCPT','1 ngày làm việc','Nhắc NCPT; báo Trưởng phòng'],['A2','Chạy danh mục dự thảo','P.NCPT','1 ngày làm việc','Cảnh báo trễ kỳ rà soát'],['A2b','Đánh giá tác động KH & so sánh thị trường','P.NCPT/K.MG','4 giờ','Nhắc hoàn tất đánh giá'],['A3','Rà soát độc lập','P.QTRR','4 giờ','Nhắc QTRR; báo BĐH'],['A4','Phê duyệt danh mục & tỷ lệ','Tổng Giám đốc','4 giờ','Nhắc phê duyệt'],['A5b','Thông báo khách hàng trước khi áp dụng','K.MG/P.DVTC','≥ 3 ngày (định kỳ) · ≥ 1 ngày (siết)','Chưa đủ thời gian báo → hoãn hiệu lực'],['A6','Cài đặt lên hệ thống','B.DVCK/P.DVTC','1 ngày làm việc','Cảnh báo chậm hiệu lực'],['A7','Đối chiếu cài đặt (Maker–Checker)','P.DVTC/KSRR','Trong ngày','Chặn hiệu lực tới khi đối chiếu xong'],['A8','CBTT & thông báo KH + môi giới','P.DVTC/K.MG','Trong ngày','Nhắc CBTT/CSKH'],['D1','Giám sát hằng ngày','P.NCPT/P.DVTC','Hằng ngày','Cảnh báo nếu thiếu báo cáo'],['E2','Đánh giá & đề xuất điều chỉnh (siết/nới)','P.NCPT','≤ 4 giờ','Leo thang lên BĐH'],['E4','Phê duyệt điều chỉnh (siết/nới)','Tổng Giám đốc','4 giờ','Giữ trạng thái chờ duyệt'],['E4b','Thông báo KH trước khi áp dụng điều chỉnh','K.MG/P.DVTC','≥ 1 ngày','Chưa đủ thời gian báo → hoãn áp dụng']];
+document.getElementById('formsGrid').innerHTML=FORMS.map(f=>`<div class="fcard fcard-link" style="cursor:pointer" onclick="openForm('${f[0]}')"><h4>${f[0]} <span style="font-size:11px;color:var(--blue);font-weight:700">👁 Xem mẫu</span></h4><div class="fc-name">${f[1]}</div><p>${f[2]}</p></div>`).join('');
+const SLA=[['A1','Lấy & cập nhật dữ liệu','P.NCPT','1 ngày làm việc','Nhắc NCPT; báo Trưởng phòng'],['A2','Chạy danh mục dự thảo','P.NCPT','1 ngày làm việc','Cảnh báo trễ kỳ rà soát'],['A2b','Đánh giá tác động KH & so sánh thị trường','P.NCPT/K.MG','4 giờ','Nhắc hoàn tất đánh giá'],['A3','Rà soát độc lập','P.QTRR','4 giờ','Nhắc QTRR; báo BĐH'],['A4','Phê duyệt danh mục & tỷ lệ','Tổng Giám đốc','4 giờ','Nhắc phê duyệt'],['A5b','Thông báo khách hàng trước khi áp dụng','K.MG/P.DVTC','≥ 3 ngày (định kỳ) · ≥ 1 ngày (siết)','Chưa đủ thời gian báo → hoãn hiệu lực'],['A6','Cài đặt lên hệ thống','B.DVCK/P.DVTC','1 ngày làm việc','Cảnh báo chậm hiệu lực'],['A7','Đối chiếu cài đặt (Maker–Checker)','P.DVTC/KSRR','Trong ngày','Chặn hiệu lực tới khi đối chiếu xong'],['A8','CBTT & thông báo KH + môi giới','P.DVTC/K.MG','Trong ngày','Nhắc CBTT/CSKH'],['D1','Giám sát hằng ngày','P.QTRR/P.DVTC','Hằng ngày','Cảnh báo nếu thiếu báo cáo'],['E2','Đánh giá & đề xuất điều chỉnh (siết/nới)','P.NCPT','≤ 4 giờ','Leo thang lên BĐH'],['E4','Phê duyệt điều chỉnh (siết/nới)','Tổng Giám đốc','4 giờ','Giữ trạng thái chờ duyệt'],['E4b','Thông báo KH trước khi áp dụng điều chỉnh','K.MG/P.DVTC','≥ 1 ngày','Chưa đủ thời gian báo → hoãn áp dụng']];
 document.querySelector('#slaTable tbody').innerHTML=SLA.map(r=>`<tr><td style="font-weight:700">${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td style="color:#C55A11;font-weight:700">${r[3]}</td><td>${r[4]}</td></tr>`).join('');
 const EVENTS=[['Trạng thái niêm yết','Mã vào diện cảnh báo/kiểm soát/hạn chế GD/đình chỉ/hủy niêm yết','Loại mã hoặc giảm mạnh LTV ngay'],['Biến động giá & thanh khoản','Giảm sàn ≥ 3 phiên; hoặc giảm ≥ 30% trong 5–10 phiên; KLGD giảm > 50%','Đánh giá lại LTV/room'],['Cấu trúc cổ phiếu','Tăng vốn/pha loãng lớn; free-float thay đổi mạnh','Rà soát điều kiện & room'],['Sự kiện doanh nghiệp','Lỗ/kiểm toán ngoại trừ; thay đổi lãnh đạo; M&A; vi phạm CBTT','Rà soát mã liên quan'],['Thị trường / quy định','VN-Index biến động mạnh; thay đổi quy định margin của UBCK','Rà soát toàn danh mục'],['Tập trung rủi ro','Dư nợ một mã/nhóm chạm ngưỡng cảnh báo','Điều chỉnh room'],['Chỉ định của Ban điều hành','Định hướng tăng/giảm cho vay theo khẩu vị rủi ro','Điều chỉnh theo chỉ đạo']];
 document.querySelector('#eventsTable tbody').innerHTML=EVENTS.map(r=>`<tr><td style="font-weight:600">${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
+const FORMSPEC={
+ 'BM-01':{title:'NHẬT KÝ PHIÊN BẢN & KIỂM ĐỊNH MÔ HÌNH ĐÁNH GIÁ KÝ QUỸ',sub:'Gắn với bước A · Xây dựng & phê duyệt Mô hình (Phụ lục 01)',type:'Word',file:'UPSC_MV-08_BM-01_Nhat_ky_kiem_dinh_Model.docx',secs:[
+  {t:'info',label:'1. Thông tin mô hình',rows:['Tên mô hình = Mô hình đánh giá CK cho vay ký quỹ (MV-08 / PL01)','Mã tài liệu','Chủ sở hữu mô hình = Phòng NCPT','Đơn vị thẩm định độc lập = Phòng QTRR']},
+  {t:'table',label:'2. Nhật ký phiên bản',head:['Phiên bản','Ngày','Nội dung thay đổi phương pháp luận','Xây dựng (NCPT)','Thẩm định (QTRR)','Phê duyệt (TGĐ)'],rows:[['01','','Ban hành lần đầu','','','']]},
+  {t:'table',label:'3. Kết quả kiểm định / backtest',head:['Tiêu chí kiểm định','Kết quả','Đạt / Không'],rows:[['Độ phủ & chất lượng dữ liệu đầu vào','',''],['Tính hợp lý của ngưỡng phân loại & LTV','',''],['Backtest: tỷ lệ mã bị sự kiện rủi ro bị bỏ sót','','']]},
+  {t:'sign',roles:['XÂY DỰNG (NCPT)','THẨM ĐỊNH (QTRR)','PHÊ DUYỆT (TGĐ)']},
+ ]},
+ 'BM-02':{title:'TỜ TRÌNH / DANH MỤC CHỨNG KHOÁN KÝ QUỸ',sub:'Excel — bảng danh mục trình phê duyệt',type:'Excel',file:'UPSC_MV-08_BM-02_Danh_muc_ky_quy.xlsx',secs:[
+  {t:'info',label:'Thông tin',rows:['Kỳ áp dụng = Tháng …… / ………']},
+  {t:'table',label:'Danh mục ký quỹ',head:['Mã CK','LTV (%)','Giá chặn','Room (CP)','Hạn mức (đồng)'],rows:[['[VD] VCB','50%','…','…','='],['[VD] ACB','40%','…','…','=']]},
+  {t:'note',text:'Hạn mức = Room × Giá chặn (Excel tự tính). Danh sách mã · LTV · giá chặn · room theo kết quả Model (PL-01).'},
+ ]},
+ 'BM-03':{title:'QUYẾT ĐỊNH BAN HÀNH DANH MỤC CHỨNG KHOÁN KÝ QUỸ',sub:'Định dạng QĐ-TGĐ · số …/QĐ-TGĐ',type:'Word',file:'UPSC_MV-08_BM-03_Quyet_dinh_ban_hanh_danh_muc.docx',secs:[
+  {t:'note',text:'Số: …/QĐ-TGĐ — QUYẾT ĐỊNH về việc ban hành Danh mục chứng khoán ký quỹ kỳ […]. Căn cứ Điều lệ Công ty; Quy trình MV-08; QĐ 87/QĐ-UBCK; xét đề nghị của P.QTRR và P.NCPT.'},
+  {t:'note',text:'Điều 1. Ban hành kèm theo Quyết định Danh mục CK ký quỹ kỳ […] (danh sách mã, tỷ lệ cho vay, giá chặn, room, hạn mức theo phụ lục đính kèm).'},
+  {t:'note',text:'Điều 2. Hiệu lực kể từ ngày […]. Danh mục được thông báo tới khách hàng trước tối thiểu 3 ngày làm việc.'},
+  {t:'note',text:'Điều 3. P.NCPT, P.QTRR, B.DVCK/P.DVTC, K.MG và các đơn vị liên quan chịu trách nhiệm thi hành.'},
+  {t:'sign',roles:['TỔNG GIÁM ĐỐC (Ký, ghi rõ họ tên, đóng dấu)']},
+ ]},
+ 'BM-04':{title:'BIÊN BẢN ĐỐI CHIẾU CÀI ĐẶT DANH MỤC TRÊN HỆ THỐNG',sub:'Nguyên tắc Maker–Checker · gắn với bước A7 / M5',type:'Word',file:'UPSC_MV-08_BM-04_Bien_ban_doi_chieu_cai_dat.docx',secs:[
+  {t:'info',label:'Thông tin',rows:['Ngày đối chiếu','Tham chiếu Quyết định số = …/QĐ-TGĐ','Hệ thống / phân hệ']},
+  {t:'table',label:'Đối chiếu cài đặt vs quyết định',head:['Mã CK','LTV duyệt','LTV cài','Room duyệt','Room cài','Giá chặn duyệt','Giá chặn cài','Khớp (Y/N)'],rows:[['','','','','','','','']]},
+  {t:'choice',label:'Kết luận',text:'☐ Khớp hoàn toàn     ☐ Có sai lệch (mô tả & hướng xử lý)'},
+  {t:'sign',roles:['MAKER — CÀI ĐẶT (P.DVTC)','CHECKER — ĐỐI CHIẾU (KSRR)']},
+ ]},
+ 'BM-05':{title:'BÁO CÁO GIÁM SÁT MARGIN HẰNG NGÀY',sub:'Excel — dư nợ vs room, cảnh báo theo ngưỡng',type:'Excel',file:'UPSC_MV-08_BM-05_Giam_sat_margin_ngay.xlsx',secs:[
+  {t:'table',label:'Giám sát theo mã / nhóm',head:['Mã / Nhóm','Hạn mức (đồng)','Dư nợ hiện tại (đồng)','% sử dụng','Ngưỡng cảnh báo','Trạng thái'],rows:[['[VD] Mã A','','','=','80%',''],['[VD] Nhóm NH','','','=','80%','']]},
+  {t:'note',text:'% sử dụng = Dư nợ / Hạn mức. Trạng thái tự động theo ngưỡng đề xuất 80 / 90 / 100% room.'},
+ ]},
+ 'BM-06':{title:'PHIẾU ĐỀ XUẤT / BIÊN BẢN ĐIỀU CHỈNH ĐỘT XUẤT DANH MỤC',sub:'Bước M2 / M4 · siết/nới đều trình phê duyệt',type:'Word',file:'UPSC_MV-08_BM-06_Phieu_dieu_chinh_dot_xuat.docx',secs:[
+  {t:'info',label:'Thông tin',rows:['Ngày','Mã CK liên quan','Người đề xuất (P.NCPT)']},
+  {t:'choice',label:'1. Sự kiện kích hoạt',text:'☐ Trạng thái niêm yết  ☐ Biến động giá/thanh khoản  ☐ Cấu trúc cổ phiếu  ☐ Sự kiện doanh nghiệp  ☐ Thị trường/quy định  ☐ Tập trung rủi ro  ☐ Chỉ định BĐH'},
+  {t:'note',text:'2. Đánh giá tác động khách hàng: ước tính KH / dư nợ có nguy cơ call margin do điều chỉnh.'},
+  {t:'table',label:'3. Nội dung điều chỉnh',head:['Tham số','Hiện tại','Đề xuất'],rows:[['LTV (%)','',''],['Room (CP)','',''],['Giá chặn','',''],['Thêm / loại mã','','']]},
+  {t:'choice',label:'4. Hướng điều chỉnh',text:'☐ SIẾT (giảm rủi ro)     ☐ NỚI (tăng cho vay) — cả hai đều trình phê duyệt trước khi áp dụng'},
+  {t:'note',text:'5. Thông báo khách hàng trước ngày hiệu lực ≥ 1 ngày.'},
+  {t:'sign',roles:['ĐỀ XUẤT (P.NCPT)','Ý KIẾN P.QTRR','PHÊ DUYỆT (TGĐ)']},
+ ]},
+ 'BM-07':{title:'THÔNG BÁO THAY ĐỔI DANH MỤC CHỨNG KHOÁN KÝ QUỸ',sub:'Bước A5b / A8 / M4b · gửi khách hàng & môi giới',type:'Word',file:'UPSC_MV-08_BM-07_Thong_bao_thay_doi_danh_muc.docx',secs:[
+  {t:'note',text:'Kính gửi: Quý khách hàng & Môi giới phụ trách.'},
+  {t:'choice',label:'Loại thay đổi',text:'☐ Định kỳ (thông báo trước ≥ 3 ngày)     ☐ Đột xuất siết/nới (≥ 1 ngày)'},
+  {t:'info',label:'Thời điểm',rows:['Ngày thông báo','Ngày hiệu lực áp dụng']},
+  {t:'table',label:'Chi tiết thay đổi danh mục',head:['Mã CK','Nội dung thay đổi','Giá trị cũ','Giá trị mới','Ghi chú'],rows:[['','LTV / giá chặn / room','','','']]},
+  {t:'note',text:'Khuyến nghị: Quý khách chủ động xử lý tài khoản (bổ sung ký quỹ / giảm dư nợ) trước ngày hiệu lực để tránh bị call margin / bán giải chấp.'},
+  {t:'sign',roles:['LẬP THÔNG BÁO (P.DVTC / K.MG)','XÁC NHẬN (P.QTRR)']},
+ ]},
+ 'BM-08':{title:'ĐÁNH GIÁ TÁC ĐỘNG ĐẾN KHÁCH HÀNG',sub:'Excel — nguy cơ call margin theo mã & theo KH; so sánh công ty cụ thể',type:'Excel',file:'UPSC_MV-08_BM-08_Danh_gia_tac_dong_KH_v3.xlsx',secs:[
+  {t:'note',text:'Gồm 3 sheet: (1) Đánh giá tác động theo mã; (2) So sánh LTV với các công ty CK cụ thể (SSI/HSC/VNDIRECT/VCSC/MBS); (3) Đánh giá theo từng khách hàng.'},
+  {t:'table',label:'Sheet: Đánh giá theo từng khách hàng',head:['Mã KH','Tên KH','Mã CK','KL nắm (CP)','LTV cũ %','LTV mới %','Sức vay CŨ','Sức vay MỚI'],rows:[['KH001','','','','','','','='],['KH002','','','','','','','=']]},
+  {t:'note',text:'Sức vay = min(KL, Room) × Giá chặn × LTV. Thiếu hụt = max(0, Dư nợ − Sức vay mới) → nguy cơ call margin theo từng khách hàng.'},
+ ]},
+ 'PL-01':{title:'MODEL ĐÁNH GIÁ CHỨNG KHOÁN CHO VAY KÝ QUỸ (THAM KHẢO)',sub:'Excel — chấm điểm margin: nhóm phi tài chính (9 chỉ tiêu) & tài chính (Tier→LTV)',type:'Excel',file:'UPSC_MV-08_Model_theo_PL01.xlsx',secs:[
+  {t:'note',text:'Gồm sheet: Hướng dẫn · Tham số · Phi tài chính · Tài chính.'},
+  {t:'note',text:'Margin Score = P1·25% + P2·15% + P3·10% + P4·10% + P5·5% + P6·10% + P7·5% + P8·10% + P9·10% → phân loại Tiêu chuẩn / Cần theo dõi / Không cho vay.'},
+  {t:'table',label:'Sheet Tài chính (Tier → LTV → Room)',head:['Mã CK','Ngành (NH/CK/BH)','KLGD 3T (CP)','KLGD 1T (CP)','Giá TT','LTV (%)','Hệ số nhân','Room (CP)'],rows:[['','','','','','','','=']]},
+  {t:'note',text:'LTV theo xếp hạng & Tier ngành tài chính; Room = min(KLGD 3T, KLGD 1T) × LTV × hệ số nhân.'},
+ ]},
+};
+
+
+function renderForm(s){
+ let h='<div class="fm-org">CÔNG TY CỔ PHẦN CHỨNG KHOÁN UP (UPSC) · Quy trình MV-08</div>';
+ h+='<div class="fm-name">'+s.title+'</div>';
+ if(s.sub)h+='<div class="fm-sub">'+s.sub+'</div>';
+ s.secs.forEach(sec=>{
+  if(sec.label)h+='<div class="fm-sec">'+sec.label+'</div>';
+  if(sec.t==='info'){h+='<div class="fm-info">'+sec.rows.map(r=>{const p=r.split(' = ');return '<div class="fi"><b>'+p[0]+':</b> '+(p[1]||'……………………')+'</div>';}).join('')+'</div>';}
+  else if(sec.t==='table'){h+='<table class="fm-tbl"><tr>'+sec.head.map(x=>'<th>'+x+'</th>').join('')+'</tr>'+sec.rows.map(r=>'<tr>'+r.map(c=>'<td>'+(c||'&nbsp;')+'</td>').join('')+'</tr>').join('')+'</table>';}
+  else if(sec.t==='box'){h+='<div class="fm-box"></div>';}
+  else if(sec.t==='note'){h+='<div class="fm-note">'+sec.text+'</div>';}
+  else if(sec.t==='choice'){h+='<div class="fm-choice">'+sec.text+'</div>';}
+  else if(sec.t==='sign'){h+='<div class="fm-sign">'+sec.roles.map(r=>'<div class="fs"><b>'+r+'</b><span>(Ký, ghi rõ họ tên)</span></div>').join('')+'</div>';}
+ });
+ h+='<a class="fm-dl" href="'+s.file+'" download target="_blank">⬇ Tải file gốc ('+s.type+')</a>';
+ return h;
+}
+function openForm(code){const s=FORMSPEC[code];if(!s)return;document.getElementById('fmCode').textContent=code+' · '+s.type;document.getElementById('fmTitle').textContent=s.title;document.getElementById('fmBody').innerHTML=renderForm(s);document.getElementById('formModal').classList.add('open');}
+function closeForm(){document.getElementById('formModal').classList.remove('open');}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeForm();});
+
 renderFlow();
 window.addEventListener('resize',()=>syncLanes(document.querySelectorAll('.role-cell').length));
 </script>
+<div class="modal-ov" id="formModal" onclick="if(event.target===this)closeForm()"><div class="modal"><div class="modal-head"><div><div class="mh-code" id="fmCode"></div><div class="mh-title" id="fmTitle"></div></div><button class="modal-close" onclick="closeForm()">&times;</button></div><div class="modal-body" id="fmBody"></div></div></div>
 </body>
 </html>
